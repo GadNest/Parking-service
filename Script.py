@@ -1,37 +1,39 @@
 from tinydb import TinyDB, Query
+from Main import paymentcalCulation
 
 db = TinyDB('db.json')
 pricePerHour = 15
 
-plates = input('Wprowadź numer rejestracyjny pojazdu: ')
-def PaymentCalculationExit():
-    import time
-    get = Query()
-    car = db.get(get.plates == f'{plates}')
-    while car == None:
-        print('Błędny numer rejestracyjny. Brak samochodu w bazie. Spróbuj ponownie.')
-        Car = db.get(get.plates == input('Wprowadź numer rejestracyjny: '))
-    else:
-        print(car)
-
-        if 'enterTime' in car:
-            enterTime = (car['enterTime'])
-            exitTime = time.time()
-            parkingTime = exitTime - enterTime
-            parkingHours = int(parkingTime / 3600)
-            parkingMinutes = int((parkingTime % 3600) / 60)
-            print('Parking time:', '\nH:', parkingHours, 'M:', parkingMinutes)
-            paymentRequired = None
-            if parkingMinutes == 0:
-                paymentRequired = parkingHours * pricePerHour
-            else:
-                paymentRequired = (parkingHours + 1) * pricePerHour
-            print('Do zapłaty: ', str(paymentRequired) + 'zł')
-            return paymentRequired
-        else:
-            print('Brak danych dotyczących czasu wjazdu. Skontaktuj się z administratorem.')
-paymentRequired = PaymentCalculationExit()
-print(paymentRequired)
+#Payment
+registration = input('Wprowadź numer rejestracyjny: ')
+get = Query()
+car = db.get(get.plates == registration)
+paymentRequired = paymentcalCulation(registration)
+print('Do zapłaty:', paymentRequired)
+paymentMade = int(input('Podaj wpłaconą kwotę w zł:'))
+currentBalance = car['moneyPaid']
+newBalance = currentBalance + paymentMade
+db.update({'moneyPaid': newBalance}, Query().plates == registration)
+car = db.get(get.plates == registration)
+print(car)
+# while paymentMade < paymentRequired:
+#     missingPayment = paymentRequired - paymentMade
+#     print(f'Pozostała kwota do zapłaty to: {missingPayment}zł')
+#     paymentMade += int(input('Podaj dodaną kwotę w zł: '))
+#     if paymentMade > paymentRequired:
+#         overPayment = paymentMade - paymentRequired
+#         print(f'Reszta: {overPayment}zł. Parking opłacony, dziękujemy.')
+#         payment = Query()
+#         db.update({'isPaid': True}, payment.plates == registration)
+#         get = Query()
+#         print(db.get(get.plates == registration))
+#     else:
+#         print('Parking opłacony, dziękujemy.')
+#         payment = Query()
+#         db.update({'isPaid': True}, payment.plates == registration)
+#         get = Query()
+#         print(db.get(get.plates == registration))
+#     registration = None
 
 
 #def exit():
