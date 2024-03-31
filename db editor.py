@@ -1,5 +1,4 @@
 from tinydb import TinyDB, Query
-import Main
 
 db = TinyDB('db.json')
 def ClearDB():
