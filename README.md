@@ -1,5 +1,7 @@
 Automatyczny parking
+
 MVP
+
 Aplikacja ma na celu automatyczną obsługę parkingu, kontrolowanie ilości dostępnych miejsc, rejestrowanie opłat bez konieczności używania biletów. 
 
 Baza danych
