@@ -2,25 +2,25 @@ from tinydb import TinyDB, Query
 
 db = TinyDB('db.json')
 pricePerHour = 10
-
+timeToLeave = 600
 
 def enter():
     #Funkcja tworzy nowy rekord w bazie danych po wprowadzeniu numeru rejestracyjnego.
     import time
     enterTime = time.time()
-    plates = input('Wprowadź numer tablic rejestracyjnych: ')
+    plates = input('[ENTER] Wprowadź numer tablic rejestracyjnych: ')
     q = Query()
     existing = db.search(q.plates == plates)
     if not existing:
         db.insert({'plates': plates, 'enterTime': enterTime, 'moneyPaid': 0})
         print('Zapraszamy.')
     else:
-        print(f'Error: Rejestracja {plates} już istnieje w bazie.')
+        print(f'ERROR: Rejestracja {plates} już istnieje w bazie.')
     return
 
 #enter()
 
-def paymentcalCulation(registration):
+def paymentCulation(registration):
     #Funkcja wylicza należną płatność na podstawie czasu wjazdu na parking oraz czasu realizowanej płatności.
     import time
     get = Query()
@@ -51,22 +51,59 @@ def paymentcalCulation(registration):
 # registration = input('Wprowadź numer rejestracyjny pojazdu: ')
 # paymentcalCulation(registration)
 
-def canLeave(registration):
+
+def paymentValidation(registration):
+    #Funkcja sprawdza czy
+    import time
     get = Query()
     car = db.get(get.plates == registration)
-    moneyPaid = car['moneyPaid']
-    balance = moneyPaid - paymentcalCulation(registration)
-    if balance < 0:
-        return False
-    elif balance >= 0:
-        return True
+    while car == None:
+        print('Błędny numer rejestracyjny. Brak samochodu w bazie. Spróbuj ponownie.')
+        car = db.get(get.plates == input('Wprowadź numer rejestracyjny: '))
+    else:
+    #     print(car)
+
+        if 'enterTime' in car:
+            enterTime = (car['enterTime'])
+            exitTime = time.time() - timeToLeave
+            parkingTime = exitTime - enterTime
+            parkingHours = int(parkingTime / 3600)
+            parkingMinutes = int((parkingTime % 3600) / 60)
+            #print('Czas postoju:', '\n'+str(parkingHours)+'h', str(parkingMinutes)+'min')
+            paymentRequired = None
+            if parkingMinutes == 0:
+                paymentRequired = parkingHours * pricePerHour
+            else:
+                paymentRequired = int((parkingHours + 1) * pricePerHour)
+            #print('Do zapłaty: ', str(paymentRequired) + 'zł')
+            return paymentRequired
+        else:
+            print('Brak danych dotyczących czasu wjazdu. Skontaktuj się z administratorem.')
+
+
+def canLeave():
+    registration = input('[CAN LEAVE] Wprowadź numer rejestracyjny pojazdu: ')
+    get = Query()
+    car = db.get(get.plates == registration)
+    while car == None:
+        print('Błędny numer rejestracyjny. Brak samochodu w bazie. Spróbuj ponownie.')
+        car = db.get(get.plates == input('Wprowadź numer rejestracyjny: '))
+    else:
+        get = Query()
+        car = db.get(get.plates == registration)
+        moneyPaid = car['moneyPaid']
+        balance = moneyPaid - paymentValidation(registration)
+        if balance < 0:
+            return False
+        elif balance >= 0:
+            return True
 
 
 
 def Payment():
     #Ta część kodu odpowiada za realizację płatności. Funkcja paymentcalCulationTerminal() wylicza kwotę, następnie obsługuje płatność. Po wykonaniu płatności ustawia flagę isPaid na True
     import time
-    registration = input('Wprowadź numer rejestracyjny: ')
+    registration = input('[PŁATNOŚĆ] Wprowadź numer rejestracyjny: ')
     query = Query()
     car = db.get(query.plates == registration)
 
@@ -77,7 +114,7 @@ def Payment():
     parkingMinutes = int((parkingTime % 3600) / 60)
     print('Czas postoju:', '\n'+str(parkingHours)+'h', str(parkingMinutes)+'min')
 
-    paymentRequired = paymentcalCulation(registration)
+    paymentRequired = paymentCulation(registration)
     missingPayment = paymentRequired - car['moneyPaid']
     if missingPayment != 0:
         print('Do zapłaty:', missingPayment)
@@ -108,9 +145,10 @@ def Payment():
     else:
         print("Parking opłacony. Dziękujemy.")
 
-#registration = input('Wprowadź numer rejestracyjny pojazdu: ')
-#Payment()
 
-
-
+def Exit():
+    if canLeave():
+        print('Dziękujemy za pobyt, zapraszamy ponownie.')
+    else:
+        print('Brak pełnej opłaty za pobyt. Proszę uregulować należność.')
 
