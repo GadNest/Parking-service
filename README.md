@@ -8,10 +8,9 @@ Baza danych ma przechowywać rejestr samochodów, które wjechały na teren park
 Baza danych powinna posiadać skonfigurowany limit miejsc oraz system informowania o kończących się zasobach miejsc. Treshold dla konkretnych powiadomień powinien być również konfigurowalny
 Baza powinna mieć ciągły licznik zajętych i wolnych miejsc w bazie, wyliczanych na podstawie skonfigurowanego limitu.
 Baza danych będzie miała zapis w formacie JSON i powinna zawierać obiekt samochodu wraz z danymi, takimi jak:
-- plates (numer rejestracyjny(string) - klucz)
-- enterTime (Timestamp – format do zdefiniowania)
-- isPaid : (True/False) - oznaczający czy postój został opłacony
-- paymentTime (Timestamp – format do zdefiniowania)
+- plates - numer rejestracyjny [str]
+- enterTime - Timestamp – unix [float]
+- moneyPaid : kwota dotychczasowych wpłat [int]
 
 Aplikacja
 Aplikacja ma prowadzić rejestr samochodów wjeżdżających na parking, prowadzić system wyliczający opłatę za parkowanie oraz usuwać samochody z bazy, które opuszczają parking po uprzednim rozliczeniu.
