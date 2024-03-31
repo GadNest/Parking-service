@@ -6,6 +6,3 @@ def ClearDB():
     #Funkcja do czyszczenia bazy danych
     db.remove(Query())
     print(db.all())
-
-
-Main.enter()
