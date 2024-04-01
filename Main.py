@@ -39,8 +39,6 @@ def paymentCalculation(registration):
             parkingTime = exitTime - enterTime
             parkingHours = int(parkingTime / 3600)
             parkingMinutes = int((parkingTime % 3600) / 60)
-            #print('Czas postoju:', '\n'+str(parkingHours)+'h', str(parkingMinutes)+'min')
-            paymentRequired = None
             if parkingMinutes == 0:
                 paymentRequired = parkingHours * pricePerHour
             else:
