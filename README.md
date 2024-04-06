@@ -18,10 +18,11 @@ Aplikacja
 Aplikacja ma prowadzić rejestr samochodów wjeżdżających na parking, prowadzić system wyliczający opłatę za parkowanie oraz usuwać samochody z bazy, które opuszczają parking po uprzednim rozliczeniu.
 Konfiguracja aplikacji
 Konfiguracja powinna zawierać listę zmiennych, które będą łatwo dostępne do edycji. Lista zmiennych:
-- price - stawka za każdą rozpoczętą godzinę parkowania
+- pricePerHour - stawka za każdą rozpoczętą godzinę parkowania
 - timeToLeave – czas na wyjazd z parkingu liczony od dokonania opłaty do wyjazdu
-- maxDbRecords – integer definiujący maksymalną liczbę zapisanych rekordów w bazie (rozmiar parkingu)
-- alertRecordNumber – integer definiujący próg, po przekroczeniu którego uruchamiany jest alert o niewielkiej liczbie wolnych miejsc
+- parkingCapacity – Maksymalna liczba samochodów (rozmiar parkingu)
+- alertRecordNumber – Liczba samochodów, która uruchamia alert o wysokim zapełnieniu parkingu
+
 Rejestrowanie samochodów
 Dedykowana funkcja do wprowadzania samochodów do bazy danych. Funkcja powinna tworzyć obiekt JSON, na podstawie inputu w postaci numeru rejestracyjnego. Obiekt będzie zawierał nr rejestracyjny jako klucz, ustawiał czas wjazdu zgodnie z timestampem czasu bieżącego oraz tworzył flagę isPaid, ustawioną by default na False.
 Rozliczanie należności za postój
@@ -34,7 +35,7 @@ Jeśli zmienna parkingTime będzie zawierała minutnik o wartości > 0
 Kolejnym etapem funkcji będzie wyświetlenie należności. Po wprowadzeniu kwoty (input) funkcja ustawia flagę isPaid na True.
 Wyjazd z parkingu
 Po wprowadzeniu nr rejestracyjnego samochodu opuszczającego parking, funkcja powinna wyciągnąć z bazy danych rekord po kluczu „plates”. 
-Jeśli flaga isPaid = True 
+
 	usunąć rekord z bazy.
 Jeśli flaga isPaid = False
 	wyświetl komunikat o nieopłaconym parkingu
