@@ -22,6 +22,7 @@ Konfiguracja powinna zawierać listę zmiennych, które będą łatwo dostępne 
 - timeToLeave – czas na wyjazd z parkingu liczony od dokonania opłaty do wyjazdu
 - parkingCapacity – integer definiujący maksymalną liczbę zapisanych rekordów w bazie (rozmiar parkingu)
 - alertRecordNumber – integer definiujący próg, po przekroczeniu którego uruchamiany jest alert o niewielkiej liczbie wolnych miejsc
+
 Rejestrowanie samochodów
 Dedykowana funkcja do wprowadzania samochodów do bazy danych. Funkcja powinna tworzyć obiekt JSON, na podstawie inputu w postaci numeru rejestracyjnego. Obiekt będzie zawierał nr rejestracyjny jako klucz, ustawiał czas wjazdu zgodnie z timestampem czasu bieżącego oraz tworzył flagę isPaid, ustawioną by default na False.
 Rozliczanie należności za postój
