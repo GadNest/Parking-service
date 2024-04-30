@@ -18,9 +18,9 @@ Aplikacja
 Aplikacja ma prowadzić rejestr samochodów wjeżdżających na parking, prowadzić system wyliczający opłatę za parkowanie oraz usuwać samochody z bazy, które opuszczają parking po uprzednim rozliczeniu.
 Konfiguracja aplikacji
 Konfiguracja powinna zawierać listę zmiennych, które będą łatwo dostępne do edycji. Lista zmiennych:
-- pricePerHour - stawka za każdą rozpoczętą godzinę parkowania
+- price - stawka za każdą rozpoczętą godzinę parkowania
 - timeToLeave – czas na wyjazd z parkingu liczony od dokonania opłaty do wyjazdu
-- parkingCapacity – integer definiujący maksymalną liczbę zapisanych rekordów w bazie (rozmiar parkingu)
+- maxDbRecords – integer definiujący maksymalną liczbę zapisanych rekordów w bazie (rozmiar parkingu)
 - alertRecordNumber – integer definiujący próg, po przekroczeniu którego uruchamiany jest alert o niewielkiej liczbie wolnych miejsc
 Rejestrowanie samochodów
 Dedykowana funkcja do wprowadzania samochodów do bazy danych. Funkcja powinna tworzyć obiekt JSON, na podstawie inputu w postaci numeru rejestracyjnego. Obiekt będzie zawierał nr rejestracyjny jako klucz, ustawiał czas wjazdu zgodnie z timestampem czasu bieżącego oraz tworzył flagę isPaid, ustawioną by default na False.
@@ -31,13 +31,13 @@ Jeśli zmienna parkingTime będzie zawierała minutnik o wartości 0:
 	Stawka (price) jest mnożona przez liczbę godzin.
 Jeśli zmienna parkingTime będzie zawierała minutnik o wartości > 0
 	Stawka (price) jest mnożona przez (liczbę godzin +1)
-
+Kolejnym etapem funkcji będzie wyświetlenie należności. Po wprowadzeniu kwoty (input) funkcja ustawia flagę isPaid na True.
 Wyjazd z parkingu
 Po wprowadzeniu nr rejestracyjnego samochodu opuszczającego parking, funkcja powinna wyciągnąć z bazy danych rekord po kluczu „plates”. 
-Jeśli funkcja canLeave będzie miała wartość True 
-	usunąć rekord z bazy, wyświetlić komunikat.
-Jeśli funkcja canLeave będzie miała wartość False
-	wyświetl komunikat o nieopłaconym parkingu.
+Jeśli flaga isPaid = True 
+	usunąć rekord z bazy.
+Jeśli flaga isPaid = False
+	wyświetl komunikat o nieopłaconym parkingu
 
 Czas na opuszczenie parkingu
 Po wprowadzeniu zmiennej paymentTime do bazy danych powinno zacząć się odliczanie czasu określonego w konfiguracji jako timeToLeave. Jeśli po upływie skonfigurowanego czasu rekord dalej istnieje w bazie, funkcja powinna zmienić flagę isPaid na False
