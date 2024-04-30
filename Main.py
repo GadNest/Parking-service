@@ -2,17 +2,31 @@ from tinydb import TinyDB, Query
 
 db = TinyDB('db.json')
 
-#Cena za godzinę parkowania [zł]
+# Stawka za każdą rozpoczętą godzinę parkowania [zł]
 pricePerHour = 10
 
-#Czas na wyjazd z parkingu po dokonaniu płatności [s]
+# Maksymalna liczba samochodów [jednostka]
+parkingCapacity = 200
+
+# Czas na wyjazd z parkingu liczony od dokonania opłaty do wyjazdu [s]
 timeToLeave = 600
 
+# Liczba samochodów, która uruchamia alert o wysokim zapełnieniu parkingu
+alertRecordNumber = 7
+
+numberOfCars = len(db.all())
+if numberOfCars >= alertRecordNumber:
+    Alert = True
+else:
+    Alert = False
+
 def enter():
-    #Funkcja tworzy nowy rekord w bazie danych po wprowadzeniu numeru rejestracyjnego.
+    # Funkcja tworzy nowy rekord w bazie danych po wprowadzeniu numeru rejestracyjnego.
+    # Funkcja do wykorzystania przy szlabanie wjazdowym
     import time
     enterTime = time.time()
     plates = input('[ENTER] Wprowadź numer tablic rejestracyjnych: ')
+    plates = plates.upper()
     q = Query()
     existing = db.search(q.plates == plates)
     if not existing:
@@ -25,7 +39,8 @@ def enter():
 
 
 def paymentCalculation(registration):
-    #Funkcja wylicza należną płatność na podstawie czasu wjazdu na parking oraz czasu realizowanej płatności.
+    # Funkcja wylicza należną płatność na podstawie czasu wjazdu na parking oraz czasu realizowanej płatności.
+    # Funkcja zagnieżdżona w funkcji payment()
     import time
     get = Query()
     car = db.get(get.plates == registration)
@@ -49,7 +64,9 @@ def paymentCalculation(registration):
 
 
 def paymentValidation(registration):
-    #Funkcja sprawdza czy płatność została uiszczona. Do sprawdzania przy wyjeździe
+    # Funkcja sprawdza czy płatność została uiszczona podczas wykorzystania funkcji canLeave.
+    # Funkcja zagnieżdżona w funkcji canLeave()
+    # Różnica między paymentCalculation jest taka, że walidacja płatności obejmuje dodatkowy czas na opuszczenie parkingu
     import time
     get = Query()
     car = db.get(get.plates == registration)
@@ -74,7 +91,8 @@ def paymentValidation(registration):
 
 
 def canLeave(registration):
-    #Ta funkcja sprawdza czy pojazd o podanym numerze rejestracyjnym ma opłacony parking i może wyjechać.
+    # Ta funkcja sprawdza czy pojazd o podanym numerze rejestracyjnym ma opłacony parking i może wyjechać.
+    # Funkcja zagnieżdżona w funkcji exit()
     get = Query()
     car = db.get(get.plates == registration)
     moneyPaid = car['moneyPaid']
@@ -86,8 +104,9 @@ def canLeave(registration):
 
 
 
-def Payment():
-    #Ta część kodu odpowiada za realizację płatności. Funkcja paymentCalculation() wylicza kwotę, następnie obsługuje płatność. Po wykonaniu płatności ustawia flagę isPaid na True
+def payment():
+    # Ta funkcja odpowiada za realizację płatności.
+    # Funkcja do wykorzystania w terminalu płatniczym.
     import time
     registration = input('[PŁATNOŚĆ] Wprowadź numer rejestracyjny: ')
     query = Query()
@@ -125,7 +144,9 @@ def Payment():
         print("Parking opłacony. Dziękujemy.")
 
 
-def Exit():
+def exit():
+    # Fukncja odpowiada za wyjazd samochodu z parkingu, walidację płatności oraz usunięcie pojazdu z bazy danych
+    # Funkcja do wykorzystania przy szlabanie wyjazdowym
     registration = input('[EXIT] Wprowadź numer rejestracyjny pojazdu: ')
     get = Query()
     car = db.get(get.plates == registration)
