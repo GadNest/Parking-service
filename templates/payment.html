@@ -11,7 +11,7 @@
 </head>
 <body id="payment-page">
 <header>
-    <h1>Płatność</h1>
+    <h1>PŁATNOŚĆ</h1>
 </header>
 <div class="content">
         <p></p>
@@ -26,9 +26,9 @@
     {% endif %}
 
     {% if result1 and result1 is number %}
-        <p>Do zapłaty: {{result1}}</p>
+        <p>Do zapłaty: {{result1}}zł</p>
     {% elif result1 == 0 %}
-        <p>Do zapłaty: {{result1}}</p>
+        <p>Do zapłaty: {{result1}}zł</p>
     {% elif result1 and result1 is string %}
         <p>Info: {{result1}}</p>
     {% endif %}

@@ -99,14 +99,23 @@ def paymentValidation(plates):
 def canLeave(plates):
     # Ta funkcja sprawdza czy pojazd o podanym numerze rejestracyjnym ma opłacony parking i może wyjechać.
     # Funkcja zagnieżdżona w funkcji exit()
+    import time
     get = Query()
     car = db.get(get.plates == plates)
+    enterTime = (car['enterTime'])
+    exitTime = time.time() - timeToLeave
+    parkingTime = exitTime - enterTime
+    parkingHours = int(parkingTime / 3600)
+    parkingMinutes = int((parkingTime % 3600) / 60)
     moneyPaid = car['moneyPaid']
     balance = moneyPaid - paymentValidation(plates)
-    if balance < 0:
-        return False
+    if parkingHours == 0 and parkingMinutes == 0:
+        return True
     elif balance >= 0:
         return True
+    elif balance < 0:
+        return False
+
 
 
 
