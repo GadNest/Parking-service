@@ -129,24 +129,27 @@ def paymentRequired(plates):
 
 def payment(plates, money):
     if ifExists(plates):
-        paymentMade = int(money)
-        plates = plates.upper()
-        query = Query()
-        car = db.get(query.plates == plates)
-        currentBalance = car['moneyPaid']
-        newBalance = currentBalance + paymentMade
-        db.update({'moneyPaid': newBalance}, Query().plates == plates)
-        paymentNeeded = int(paymentRequired(plates))
-        if paymentNeeded > 0:
-            return f'Pozostała kwota do zapłaty to: {paymentNeeded}zł.'
-        elif paymentNeeded < 0:
-            refund = paymentNeeded*(-1)
-            balanceAfterRefund = newBalance - refund
-            db.update({'moneyPaid': balanceAfterRefund}, Query().plates == plates)
-            return f'Reszta: {refund}zł.'
+        if type(money) != int:
+            return 'Wprowadź kwotę płatności'
         else:
+            paymentMade = int(money)
+            plates = plates.upper()
+            query = Query()
+            car = db.get(query.plates == plates)
+            currentBalance = car['moneyPaid']
+            newBalance = currentBalance + paymentMade
             db.update({'moneyPaid': newBalance}, Query().plates == plates)
-            return 'Parking opłacony, dziękujemy.'
+            paymentNeeded = int(paymentRequired(plates))
+            if paymentNeeded > 0:
+                return f'Pozostała kwota do zapłaty to: {paymentNeeded}zł.'
+            elif paymentNeeded < 0:
+                refund = paymentNeeded*(-1)
+                balanceAfterRefund = newBalance - refund
+                db.update({'moneyPaid': balanceAfterRefund}, Query().plates == plates)
+                return f'Reszta: {refund}zł.'
+            else:
+                db.update({'moneyPaid': newBalance}, Query().plates == plates)
+                return 'Parking opłacony, dziękujemy.'
     else:
         return 'ERROR: Błędny numer rejestracyjny.'
 
