@@ -24,17 +24,21 @@ def emptySlots():
     numberOfCars = len(db.all())
     return parkingCapacity - numberOfCars
 
-
+def ifExists(plates):
+    q = Query()
+    existing = db.search(q.plates == plates)
+    if existing:
+        return True
+    else:
+        return False
 def enter(plates):
     # Funkcja tworzy nowy rekord w bazie danych po wprowadzeniu numeru rejestracyjnego.
     # Funkcja do wykorzystania przy szlabanie wjazdowym
     import time, datetime
     enterTime = time.time()
     enterTimeHuman = datetime.datetime.now().strftime("%H:%M")
-    plates = plates.upper()
-    q = Query()
-    existing = db.search(q.plates == plates)
-    if not existing:
+    ifExists(plates)
+    if not ifExists(plates):
         db.insert({'plates': plates, 'enterTime': enterTime, 'moneyPaid': 0})
         return f'Samochód o tablicach rejestracyjnych {plates} wjechał na parking o godzinie {enterTimeHuman}'
     else:
@@ -49,7 +53,7 @@ def paymentCalculation(plates):
     import time
     get = Query()
     car = db.get(get.plates == plates)
-    while car == None:
+    while not ifExists(plates):
         return 'Błędny numer rejestracyjny. Brak samochodu w bazie. Spróbuj ponownie.'
         car = db.get(get.plates == input('Wprowadź numer rejestracyjny: '))
     else:
@@ -139,25 +143,27 @@ def paymentRequired(plates):
         return 'Samochód nie znajduje się w bazie danych. Wprowadź poprawny numer rejestracyjny'
 
 def payment(plates, money):
-    paymentMade = int(money)
-    plates = plates.upper()
-    query = Query()
-    car = db.get(query.plates == plates)
-    currentBalance = car['moneyPaid']
-    newBalance = currentBalance + paymentMade
-    db.update({'moneyPaid': newBalance}, Query().plates == plates)
-    paymentNeeded = int(paymentRequired(plates))
-    if paymentNeeded > 0:
-        return f'Pozostała kwota do zapłaty to: {paymentNeeded}zł.'
-    elif paymentNeeded < 0:
-        refund = paymentNeeded*(-1)
-        balanceAfterRefund = newBalance - refund
-        db.update({'moneyPaid': balanceAfterRefund}, Query().plates == plates)
-        return f'Reszta: {refund}zł.'
-    else:
+    if ifExists(plates):
+        paymentMade = int(money)
+        plates = plates.upper()
+        query = Query()
+        car = db.get(query.plates == plates)
+        currentBalance = car['moneyPaid']
+        newBalance = currentBalance + paymentMade
         db.update({'moneyPaid': newBalance}, Query().plates == plates)
-        return 'Parking opłacony, dziękujemy.'
-
+        paymentNeeded = int(paymentRequired(plates))
+        if paymentNeeded > 0:
+            return f'Pozostała kwota do zapłaty to: {paymentNeeded}zł.'
+        elif paymentNeeded < 0:
+            refund = paymentNeeded*(-1)
+            balanceAfterRefund = newBalance - refund
+            db.update({'moneyPaid': balanceAfterRefund}, Query().plates == plates)
+            return f'Reszta: {refund}zł.'
+        else:
+            db.update({'moneyPaid': newBalance}, Query().plates == plates)
+            return 'Parking opłacony, dziękujemy.'
+    else:
+        return 'ERROR: Błędny numer rejestracyjny.'
 
 def exit(plates):
     # Fukncja odpowiada za wyjazd samochodu z parkingu, walidację płatności oraz usunięcie pojazdu z bazy danych
