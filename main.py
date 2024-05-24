@@ -129,7 +129,7 @@ def paymentRequired(plates):
 
 def payment(plates, money):
     if ifExists(plates):
-        if type(money) != int:
+        if money == "":
             return 'Wprowadź kwotę płatności'
         else:
             paymentMade = int(money)
