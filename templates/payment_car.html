@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking app</title>
+    <link rel="stylesheet" href="css/payment-styles.css">
+    <link rel="icon" href="css/images/favicon.ico">
+    <a href="/" class="button">WSTECZ</a>
+    <p></p>
+</head>
+<body id="payment-page">
+<header>
+    <h1>Płatność</h1>
+</header>
+<div class="content">
+        <p></p>
+    <form action='/payment' method="POST">
+        <input type="text" id='plates' name="inputPlates" placeholder="Wprowadź numer tablic rejestracyjnych">
+        <p></p>
+        <button class="button" id="submit" type="submit">WPROWADŹ</button>
+    </form>
+    {% if result %}
+        <p>{{result}}</p>
+    {% endif %}
+</div>
+</body>
+</html>

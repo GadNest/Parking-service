@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking app</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="css/images/favicon.ico">
+    <h3>WOLNE MIEJSCA PARKINGOWE: {{ available_slots }}</h3>
+</head>
+<body>
+<header>
+    <h1>WITAJ NA PARKINGU</h1>
+</header>
+    <div class="buttons">
+        <button class="button" id="enter" onclick="window.location.href='enter'">WJAZD</button>
+        <button class="button" id="pay" onclick="window.location.href='payment'">PŁATNOŚĆ</button>
+        <button class="button" id="leave" onclick="window.location.href='exit'">WYJAZD</button>
+    </div>
+</body>
+</html>

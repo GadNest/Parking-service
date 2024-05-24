@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking app</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="css/images/favicon.ico">
+    <a href="/" class="button">WSTECZ</a><h3>WOLNE MIEJSCA PARKINGOWE: {{ available_slots }}</h3>
+    <p></p>
+</head>
+<body>
+<header>
+    <h1>WJAZD</h1>
+</header>
+    <div class="content">
+        <p></p>
+    <form action='/enter' method="POST">
+        <input type="text" id='plates' name="inputPlates" placeholder="Wprowadź numer tablic rejestracyjnych">
+        <p></p>
+        <button class="button" id="submit" type="submit">WPROWADŹ</button>
+    </form>
+    {% if result %}
+        <p>{{result}}</p>
+    {% endif %}
+</div>
+</body>
+</html>
