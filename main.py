@@ -42,8 +42,11 @@ def enter(plates):
     enterTimeHuman = datetime.datetime.now().strftime("%H:%M")
     ifExists(plates)
     if not ifExists(plates):
-        db.insert({'plates': plates, 'enterTime': enterTime, 'moneyPaid': 0})
-        return f'Samochód o tablicach rejestracyjnych {plates} wjechał na parking o godzinie {enterTimeHuman}'
+        if plates == "":
+            return 'Wprowadź numer rejestracyjny.'
+        else:
+            db.insert({'plates': plates, 'enterTime': enterTime, 'moneyPaid': 0})
+            return f'Samochód o tablicach rejestracyjnych {plates} wjechał na parking o godzinie {enterTimeHuman}'
     else:
         return (f'ERROR: Rejestracja {plates} już istnieje w bazie.')
 
