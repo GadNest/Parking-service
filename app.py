@@ -2,16 +2,17 @@ from flask import Flask, render_template, request, session
 from main import enter, emptySlots, exit, paymentRequired, payment
 
 app = Flask(__name__, static_folder="css")
-app.secret_key = "secret"
+app.secret_key = "r4d0m5k1"
 @app.route('/')
 def index():
+    session.clear()
     empty_slots = emptySlots()
     return render_template('home.html', available_slots=empty_slots)
 
 @app.route('/enter', methods=['GET', 'POST'])
 def enter_parking():
     if request.method == 'POST':
-        plates = request.form["inputPlates"]
+        plates = request.form["inputPlates"].upper()
         response = enter(plates)
         empty_slots = emptySlots()
         return render_template('enter.html', result=response, available_slots=empty_slots)
@@ -42,7 +43,8 @@ def pay():
             return render_template('payment.html')
     else:
         if request.method == "POST":
-            return 'Wprowadź numer rejestracyjny samochodu.'
+            info='Wprowadź numer rejestracyjny samochodu.'
+            return render_template('payment.html', result2=info)
         else:
             return render_template('payment.html')
 @app.route('/exit', methods=['GET', 'POST'])
