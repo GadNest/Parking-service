@@ -16,6 +16,8 @@ alertRecordNumber = 7
 
 #Bezpłatny czas parkowania [s]
 freeTime = 3600
+
+
 def alert():
     numberOfCars = len(db.all())
     if numberOfCars >= alertRecordNumber:
@@ -23,9 +25,11 @@ def alert():
     else:
         return False
 
+
 def emptySlots():
     numberOfCars = len(db.all())
     return parkingCapacity - numberOfCars
+
 
 def ifExists(plates):
     q = Query()
@@ -34,10 +38,13 @@ def ifExists(plates):
         return True
     else:
         return False
+
+
 def enter(plates):
     # Funkcja tworzy nowy rekord w bazie danych po wprowadzeniu numeru rejestracyjnego.
     # Funkcja do wykorzystania przy szlabanie wjazdowym
-    import time, datetime
+    import time
+    import datetime
     enterTime = time.time()
     enterTimeHuman = datetime.datetime.now().strftime("%H:%M")
     ifExists(plates)
@@ -49,8 +56,6 @@ def enter(plates):
             return f'Samochód o tablicach rejestracyjnych {plates} wjechał na parking o godzinie {enterTimeHuman}'
     else:
         return (f'ERROR: Rejestracja {plates} już istnieje w bazie.')
-
-
 
 
 def paymentCalculation(plates):
@@ -69,7 +74,9 @@ def paymentCalculation(plates):
             parkingTime = exitTime - enterTime - freeTime
             parkingHours = int(parkingTime / 3600)
             parkingMinutes = int((parkingTime % 3600) / 60)
-            if parkingMinutes == 0:
+            if parkingTime <= 0:
+                paymentRequired = 0
+            elif parkingMinutes == 0:
                 paymentRequired = parkingHours * pricePerHour
             else:
                 paymentRequired = int((parkingHours + 1) * pricePerHour)
@@ -106,11 +113,6 @@ def paymentValidation(plates):
             return'Brak danych dotyczących czasu wjazdu. Skontaktuj się z administratorem.'
 
 
-
-
-
-
-
 def paymentRequired(plates):
     q = Query()
     existing = db.search(q.plates == plates)
@@ -129,6 +131,7 @@ def paymentRequired(plates):
         return missingPayment
     else:
         return 'Samochód nie znajduje się w bazie danych. Wprowadź poprawny numer rejestracyjny'
+
 
 def payment(plates, money):
     if ifExists(plates):
