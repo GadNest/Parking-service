@@ -103,12 +103,13 @@ def paymentValidation(plates):
             parkingHours = int(parkingTime / 3600)
             parkingMinutes = int((parkingTime % 3600) / 60)
             paymentRequired = None
-            if parkingMinutes == 0:
+            if parkingTime <= 0:
+                paymentRequired = 0
+            elif parkingMinutes == 0:
                 paymentRequired = parkingHours * pricePerHour
-                return paymentRequired
             else:
                 paymentRequired = int((parkingHours + 1) * pricePerHour)
-                return paymentRequired
+            return paymentRequired
         else:
             return'Brak danych dotyczących czasu wjazdu. Skontaktuj się z administratorem.'
 
